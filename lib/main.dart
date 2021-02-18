@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:power_library/screens/book-form.dart';
+import 'package:power_library/screens/form.dart';
 import 'package:power_library/screens/home.dart';
 import './utils/utils.dart';
 
@@ -17,6 +17,9 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         initialRoute: '/',
-        routes: {'/': (ctx) => Home(), '/book-form': (ctx) => BookForm()});
+        routes: {
+          HomeScreen.routeName: (ctx) => HomeScreen(),
+          BookForm.routeName: (ctx) => BookForm()
+        });
   }
 }

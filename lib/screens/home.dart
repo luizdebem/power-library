@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:power_library/models/book.dart';
+import 'package:power_library/screens/form.dart';
 
-class Home extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
+  static const routeName = '/';
+
   @override
-  _HomeState createState() => _HomeState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeScreenState extends State<HomeScreen> {
   List<Book> _myBooks = [
     Book(author: "Josias", title: "Universo em Desencanto", isRead: true),
     Book(
@@ -71,7 +74,7 @@ class _HomeState extends State<Home> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => {Navigator.pushNamed(context, '/book-form')},
+        onPressed: () => {Navigator.pushNamed(context, BookForm.routeName)},
         tooltip: "Adicionar Livro",
         child: Icon(Icons.add),
       ),

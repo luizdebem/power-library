@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class BookForm extends StatefulWidget {
+  static const routeName = '/form';
+
   @override
   _BookFormState createState() => _BookFormState();
 }
