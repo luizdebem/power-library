@@ -25,7 +25,11 @@ class _BookFormState extends State<BookForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Novo Livro")),
+      backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
+      appBar: AppBar(
+        title: Text("Novo Livro"),
+        elevation: 0,
+      ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(25.0),
         child: Container(
@@ -68,6 +72,14 @@ class _BookFormState extends State<BookForm> {
                           hintText: "Nome",
                           border: OutlineInputBorder()),
                       keyboardType: TextInputType.name,
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    FormBuilderImagePicker(
+                      name: "cover",
+                      maxImages: 1,
+                      decoration: InputDecoration(labelText: "Capa"),
                     ),
                     SizedBox(
                       height: 15,

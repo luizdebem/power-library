@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:power_library/models/book.dart';
 import 'package:power_library/screens/form.dart';
+import '../components/bookTile.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/';
@@ -24,8 +25,35 @@ class _HomeScreenState extends State<HomeScreen> {
     Book(author: "Manolo", title: "Arquitetura de Software", isRead: false)
   ];
 
+  List<Widget> _bookTiles = [];
+  int _delay = 0;
+
+  void _loadList() {
+    _myBooks.forEach((Book b) {
+      _delay += 200;
+
+      Future.delayed(Duration(milliseconds: _delay), () {
+        _bookTiles.add(BookTile(book: b));
+        _listKey.currentState.insertItem(_bookTiles.length - 1);
+      });
+    });
+  }
+
   int readBooksCount() {
     return _myBooks.where((book) => book.isRead).length;
+  }
+
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
+  var _tweenInsert = Tween(begin: Offset(1, 0), end: Offset(0, 0))
+      .chain(CurveTween(curve: Curves.ease));
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _loadList();
+    });
   }
 
   @override
@@ -33,12 +61,15 @@ class _HomeScreenState extends State<HomeScreen> {
     bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(title: Text("Power Library")),
+      backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
+      appBar: AppBar(
+        title: Text("Power Library"),
+        elevation: 0,
+      ),
       body: Container(
         margin: EdgeInsets.only(top: 20.0),
         child: Column(
-          // mainAxisAlignment: MainAxisAlignment
+          // mainAxisAligfromRGBO(58, 66, 86, 1.0nment: MainAxisAlignment
           //     .center, // essa linha diz: alinha o main axis (y) pro centro em relação ao teu elemento-pai.
           // crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -49,18 +80,13 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Expanded(
-              child: ListView.separated(
-                itemCount: _myBooks.length,
-                itemBuilder: (ctx, index) => ListTile(
-                  title: Text(_myBooks[index].title),
-                  subtitle: Text(_myBooks[index].author),
-                  leading: Icon(Icons.book),
-                  trailing: _myBooks[index].isRead
-                      ? Icon(Icons.check_box_outlined)
-                      : Icon(Icons.check_box_outline_blank),
-                ),
-                separatorBuilder: (context, index) => Divider(),
-              ),
+              child: AnimatedList(
+                  key: _listKey,
+                  initialItemCount: _bookTiles.length,
+                  itemBuilder: (ctx, index, animation) => SlideTransition(
+                        position: animation.drive(_tweenInsert),
+                        child: _bookTiles[index],
+                      )),
             ),
             Container(
                 alignment: Alignment.center,
