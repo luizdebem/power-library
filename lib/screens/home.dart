@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:power_library/models/book.dart';
 import 'package:power_library/screens/form.dart';
 import '../components/bookTile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/';
@@ -11,35 +12,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Book> _myBooks = [
-    Book(
-        author: "Josias",
-        title: "Universo em Desencanto",
-        isRead: true,
-        rate: 5),
-    Book(
-        author: "Josias",
-        title: "Universo em Desencanto parte 2",
-        isRead: true,
-        rate: 4),
-    Book(author: "Manolo", title: "Java para Iniciantes", isRead: false),
-    Book(
-        author: "Manolo",
-        title: "Estrutura de Dados para Iniciantes",
-        isRead: true,
-        rate: 4),
-    Book(
-        author: "Manolo",
-        title: "Arquitetura de Software",
-        isRead: false,
-        rate: 4)
-  ];
-
   List<Widget> _bookTiles = [];
   int _delay = 0;
+  CollectionReference booksCollection =
+      FirebaseFirestore.instance.collection('books');
 
-  void _loadList() {
-    _myBooks.forEach((Book b) {
+  void _loadList() async {
+    final snapshot = await booksCollection.get();
+    snapshot.docs.forEach((data) {
+      Book b = Book.fromJson({'id': data.id, ...data.data()});
+      print(b.toString());
       _delay += 200;
 
       Future.delayed(Duration(milliseconds: _delay), () {
@@ -47,10 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
         _listKey.currentState.insertItem(_bookTiles.length - 1);
       });
     });
-  }
-
-  int readBooksCount() {
-    return _myBooks.where((book) => book.isRead).length;
   }
 
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();

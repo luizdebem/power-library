@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "710705939970",
+    "project_id": "powerlibrary-ee9a5",
+    "storage_bucket": "powerlibrary-ee9a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:710705939970:android:3aee841c48a151b467491b",
+        "android_client_info": {
+          "package_name": "com.example.powerlibrary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "710705939970-ku2s41egv6jl6484bjq0stpe1j0bplc3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDplbRu7UBdt9ntY3FjaUY2uT9uw4GsTVc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "710705939970-ku2s41egv6jl6484bjq0stpe1j0bplc3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "710705939970-4o7m3qiv6uron74sn4225lmp0oh59no5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.powerlibrary"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
