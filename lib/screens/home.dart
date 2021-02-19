@@ -12,17 +12,27 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Book> _myBooks = [
-    Book(author: "Josias", title: "Universo em Desencanto", isRead: true),
+    Book(
+        author: "Josias",
+        title: "Universo em Desencanto",
+        isRead: true,
+        rate: 5),
     Book(
         author: "Josias",
         title: "Universo em Desencanto parte 2",
-        isRead: true),
+        isRead: true,
+        rate: 4),
     Book(author: "Manolo", title: "Java para Iniciantes", isRead: false),
     Book(
         author: "Manolo",
         title: "Estrutura de Dados para Iniciantes",
-        isRead: true),
-    Book(author: "Manolo", title: "Arquitetura de Software", isRead: false)
+        isRead: true,
+        rate: 4),
+    Book(
+        author: "Manolo",
+        title: "Arquitetura de Software",
+        isRead: false,
+        rate: 4)
   ];
 
   List<Widget> _bookTiles = [];
@@ -67,18 +77,12 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0,
       ),
       body: Container(
-        margin: EdgeInsets.only(top: 20.0),
+        margin: EdgeInsets.only(top: 10.0),
         child: Column(
           // mainAxisAligfromRGBO(58, 66, 86, 1.0nment: MainAxisAlignment
           //     .center, // essa linha diz: alinha o main axis (y) pro centro em relação ao teu elemento-pai.
           // crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Center(
-              child: Image.asset(
-                "assets/images/logowide.png",
-                width: 240.0,
-              ),
-            ),
             Expanded(
               child: AnimatedList(
                   key: _listKey,
@@ -88,14 +92,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: _bookTiles[index],
                       )),
             ),
-            Container(
-                alignment: Alignment.center,
-                padding: EdgeInsets.fromLTRB(
-                    20.0, isIOS ? 20.0 : 10.0, 20.0, isIOS ? 22.0 : 10.0),
-                decoration: BoxDecoration(color: Colors.teal),
-                child: Text(
-                    "Livros Lidos: ${readBooksCount()}/${_myBooks.length}",
-                    style: TextStyle(color: Colors.white)))
           ],
         ),
       ),

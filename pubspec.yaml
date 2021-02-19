@@ -33,6 +33,8 @@ dependencies:
 
   google_fonts: ^0.2.0
 
+  flutter_rating_bar: ^3.2.0+1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -50,7 +52,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/logowide.png
+    - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
