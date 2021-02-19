@@ -3,6 +3,7 @@ import 'package:power_library/models/book.dart';
 import 'package:power_library/screens/form.dart';
 import '../components/bookTile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../services/database.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/';
@@ -14,11 +15,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<Widget> _bookTiles = [];
   int _delay = 0;
-  CollectionReference booksCollection =
-      FirebaseFirestore.instance.collection('books');
 
   void _loadList() async {
-    final snapshot = await booksCollection.get();
+    final snapshot = await DatabaseService().booksQuery;
     snapshot.docs.forEach((data) {
       Book b = Book.fromJson({'id': data.id, ...data.data()});
       print(b.toString());

@@ -39,6 +39,8 @@ dependencies:
   
   cloud_firestore: ^0.16.0
 
+  provider: ^4.3.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
