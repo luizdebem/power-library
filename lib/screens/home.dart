@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:power_library/models/book.dart';
 import 'package:power_library/screens/form.dart';
+import 'package:power_library/services/database.dart';
 import 'package:provider/provider.dart';
 import '../components/bookTile.dart';
+import 'package:firestore_ui/animated_firestore_list.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/';
@@ -36,13 +38,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-  var _tweenInsert = Tween(begin: Offset(1, 0), end: Offset(0, 0))
-      .chain(CurveTween(curve: Curves.ease));
 
   @override
   Widget build(BuildContext context) {
-    final books = Provider.of<QuerySnapshot>(context);
-    _loadList(books);
+    final _tweenInsert = Tween(begin: Offset(1, 0), end: Offset(0, 0))
+        .chain(CurveTween(curve: Curves.ease));
 
     return Scaffold(
       backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
@@ -58,13 +58,17 @@ class _HomeScreenState extends State<HomeScreen> {
           // crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Expanded(
-              child: AnimatedList(
-                  key: _listKey,
-                  initialItemCount: _bookTiles.length,
-                  itemBuilder: (ctx, index, animation) => SlideTransition(
-                        position: animation.drive(_tweenInsert),
-                        child: _bookTiles[index],
-                      )),
+              child: FirestoreAnimatedList(
+                query: DatabaseService().booksQuery,
+                itemBuilder: (ctx, data, animation, index) {
+                  Book b = Book.fromJson({'id': data.id, ...data.data()});
+
+                  return SlideTransition(
+                    position: animation.drive(_tweenInsert),
+                    child: BookTile(book: b),
+                  );
+                },
+              ),
             ),
           ],
         ),

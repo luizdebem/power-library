@@ -6,6 +6,5 @@ class DatabaseService {
 
   Stream<QuerySnapshot> get booksStream => booksCollection.snapshots();
 
-  Future<QuerySnapshot> get booksQuery =>
-      booksCollection.orderBy('title').get();
+  Query get booksQuery => booksCollection.orderBy('title');
 }
