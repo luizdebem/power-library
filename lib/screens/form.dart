@@ -14,6 +14,7 @@ class BookForm extends StatefulWidget {
 class _BookFormState extends State<BookForm> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool isRead = false;
+  var book;
 
   void toggleSwitch(_) {
     setState(() {
@@ -26,35 +27,37 @@ class _BookFormState extends State<BookForm> {
     });
   }
 
-  void _saveBook(Map<String, dynamic> bookData, Book currentBook) async {
+  void _saveBook(Map<String, dynamic> bookData) async {
     String coverPath;
 
     if (bookData['cover'].length > 0) {
       coverPath = await DatabaseService().uploadFile(bookData['cover'][0]);
     }
 
-    coverPath ??= currentBook?.cover;
+    coverPath ??= book?.cover;
 
     final newBookData = {...bookData, 'cover': coverPath};
 
-    if (currentBook?.id == null) {
+    if (book?.id == null) {
       await DatabaseService().addBook(newBookData);
     } else {
-      await DatabaseService().updateBook(currentBook.id, newBookData);
+      await DatabaseService().updateBook(book.id, newBookData);
     }
     Navigator.of(context, rootNavigator: true).pop();
   }
 
   @override
-  Widget build(BuildContext context) {
-    final Book book = ModalRoute.of(context)
+  void didChangeDependencies() {
+    book = ModalRoute.of(context)
         .settings
         .arguments; // Pegando os parâmetros passados pelo Navigator
+    isRead = book?.isRead ?? false;
+    print(isRead);
+    super.didChangeDependencies();
+  }
 
-    setState(() {
-      isRead = book?.isRead ?? false;
-    });
-
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
       appBar: AppBar(
@@ -152,12 +155,15 @@ class _BookFormState extends State<BookForm> {
                             max: 5.0,
                             enabled: isRead,
                             filledColor: Colors.amber,
-                            validator: FormBuilderValidators.compose([
-                              FormBuilderValidators.required(context),
-                              FormBuilderValidators.min(context, 1.0,
-                                  errorText:
-                                      "Deixe uma avaliação para o livro!")
-                            ]))
+                            validator: (val) {
+                              if (!isRead) {
+                                return null;
+                              }
+                              if (val == null || val < 1.0) {
+                                return "Dê uma avaliação entre 1 e 5 estrelas.";
+                              }
+                              return null;
+                            })
                         : Container()
                   ],
                 ),
@@ -174,7 +180,7 @@ class _BookFormState extends State<BookForm> {
                     print("Success book form:");
                     print(_formKey.currentState.value);
 
-                    await _saveBook(_formKey.currentState.value, book);
+                    _saveBook(_formKey.currentState.value);
                   } else {
                     print("Error book form:");
                     print(_formKey.currentState.value);
