@@ -19,6 +19,8 @@ class DatabaseService {
   Future<void> updateBook(String id, Map<String, dynamic> data) =>
       booksCollection.doc(id).update(data);
 
+  Future<void> deleteBook(String id) => booksCollection.doc(id).delete();
+
   Future<String> uploadFile(File file) async {
     String path = "${coverFolder}/${DateTime.now()}.png";
     try {
