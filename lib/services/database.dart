@@ -7,4 +7,7 @@ class DatabaseService {
   Stream<QuerySnapshot> get booksStream => booksCollection.snapshots();
 
   Query get booksQuery => booksCollection.orderBy('title');
+
+  Future<DocumentReference> addBook(Map<String, dynamic> data) =>
+      booksCollection.add(data);
 }

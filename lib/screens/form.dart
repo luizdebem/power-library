@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:power_library/services/database.dart';
 
 class BookForm extends StatefulWidget {
   static const routeName = '/form';
@@ -20,6 +21,12 @@ class _BookFormState extends State<BookForm> {
         _formKey.currentState.fields['rate']?.didChange(0.0);
       }
     });
+  }
+
+  void _saveBook(Map<String, dynamic> bookData) async {
+    // save to firebase
+    await DatabaseService().addBook(bookData);
+    Navigator.of(context, rootNavigator: true).pop();
   }
 
   @override
@@ -79,7 +86,24 @@ class _BookFormState extends State<BookForm> {
                     FormBuilderImagePicker(
                       name: "cover",
                       maxImages: 1,
-                      decoration: InputDecoration(labelText: "Capa"),
+                      initialValue: [],
+                      cameraLabel: Text(
+                        "Tire uma foto da capa do livro!",
+                        style: TextStyle(color: Colors.black87),
+                      ),
+                      galleryLabel: Text(
+                        "Escolha uma imagem da sua galeria!",
+                        style: TextStyle(color: Colors.black87),
+                      ),
+                      decoration: InputDecoration(
+                          labelText: "Capa",
+                          errorBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.red))),
+                      placeholderImage: Image.asset(
+                        "assets/images/cameraplaceholder.jpg",
+                        width: 60.0,
+                        height: 80.0,
+                      ).image,
                     ),
                     SizedBox(
                       height: 15,
@@ -99,6 +123,7 @@ class _BookFormState extends State<BookForm> {
                             initialValue: 0.0,
                             max: 5.0,
                             enabled: isRead,
+                            filledColor: Colors.amber,
                             validator: FormBuilderValidators.compose([
                               FormBuilderValidators.required(context),
                               FormBuilderValidators.min(context, 1.0,
@@ -114,9 +139,43 @@ class _BookFormState extends State<BookForm> {
               ),
               RaisedButton(
                 child: Text("Salvar"),
-                onPressed: () {
-                  _formKey.currentState.validate();
-                  print(_formKey.currentState.value);
+                onPressed: () async {
+                  _formKey.currentState
+                      .save(); // evitar que o usuário perca o progesso do formulário
+                  if (_formKey.currentState.validate()) {
+                    print("Success book form:");
+                    print(_formKey.currentState.value);
+
+                    await _saveBook(_formKey.currentState.value);
+                  } else {
+                    print("Error book form:");
+                    print(_formKey.currentState.value);
+
+                    await showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                              title: Text(
+                                "Erro!",
+                                style: TextStyle(color: Colors.black87),
+                              ),
+                              content: Text(
+                                "Não foi possível salvar o livro, dados inválidos.",
+                                style: TextStyle(color: Colors.black87),
+                              ),
+                              actions: [
+                                FlatButton(
+                                  onPressed: () {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop();
+                                  },
+                                  child: Text(
+                                    "OK",
+                                    style: TextStyle(color: Colors.black87),
+                                  ),
+                                ),
+                              ],
+                            ));
+                  }
                 },
               )
             ],
