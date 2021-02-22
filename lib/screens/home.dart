@@ -1,9 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:power_library/models/book.dart';
 import 'package:power_library/screens/form.dart';
+import 'package:provider/provider.dart';
 import '../components/bookTile.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../services/database.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/';
@@ -16,36 +16,33 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> _bookTiles = [];
   int _delay = 0;
 
-  void _loadList() async {
-    final snapshot = await DatabaseService().booksQuery;
-    snapshot.docs.forEach((data) {
-      Book b = Book.fromJson({'id': data.id, ...data.data()});
-      print(b.toString());
-      _delay += 200;
+  void _loadList(QuerySnapshot books) async {
+    setState(() {
+      _bookTiles.clear();
+      _listKey = GlobalKey<AnimatedListState>();
+      _delay = 0;
 
-      Future.delayed(Duration(milliseconds: _delay), () {
-        _bookTiles.add(BookTile(book: b));
-        _listKey.currentState.insertItem(_bookTiles.length - 1);
+      books.docs.forEach((data) {
+        Book b = Book.fromJson({'id': data.id, ...data.data()});
+        print(b.toString());
+        _delay += 200;
+
+        Future.delayed(Duration(milliseconds: _delay), () {
+          _bookTiles.add(BookTile(book: b));
+          _listKey.currentState.insertItem(_bookTiles.length - 1);
+        });
       });
     });
   }
 
-  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
+  GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   var _tweenInsert = Tween(begin: Offset(1, 0), end: Offset(0, 0))
       .chain(CurveTween(curve: Curves.ease));
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _loadList();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    final books = Provider.of<QuerySnapshot>(context);
+    _loadList(books);
 
     return Scaffold(
       backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),

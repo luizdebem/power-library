@@ -43,7 +43,7 @@ ThemeData buildTheme() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return StreamProvider.value(
+    return StreamProvider<QuerySnapshot>.value(
       value: DatabaseService().booksStream,
       child: MaterialApp(
           title: 'Flutter Demo',
