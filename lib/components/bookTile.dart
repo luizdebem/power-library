@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:power_library/models/book.dart';
+import '../services/database.dart';
 
 class BookTile extends StatelessWidget {
   final Book book;
@@ -19,18 +20,39 @@ class BookTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.only(right: 16),
-              margin: EdgeInsets.symmetric(vertical: 20, horizontal: 18),
-              decoration: BoxDecoration(
-                  border: Border(
-                      right: BorderSide(width: 1.0, color: Colors.white24))),
-              child: Image.asset(
-                "assets/images/bookcover.png",
-                width: 60.0,
-                height: 80.0,
-                fit: BoxFit.contain,
-              ),
-            ),
+                padding: EdgeInsets.only(right: 16),
+                margin: EdgeInsets.symmetric(vertical: 20, horizontal: 18),
+                decoration: BoxDecoration(
+                    border: Border(
+                        right: BorderSide(width: 1.0, color: Colors.white24))),
+                child: book.cover != null
+                    ? FutureBuilder<String>(
+                        future: DatabaseService().getFileURL(book.cover),
+                        builder: (context, AsyncSnapshot<String> snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.done:
+                              return Image.network(
+                                snapshot.data,
+                                width: 60.0,
+                                height: 80.0,
+                                fit: BoxFit.contain,
+                              );
+                            default:
+                              Image.asset(
+                                "assets/images/bookcover.png",
+                                width: 60.0,
+                                height: 80.0,
+                                fit: BoxFit.contain,
+                              );
+                          }
+                        },
+                      )
+                    : Image.asset(
+                        "assets/images/bookcover.png",
+                        width: 60.0,
+                        height: 80.0,
+                        fit: BoxFit.contain,
+                      )),
             Expanded(
               child: Container(
                 height: 80.0,

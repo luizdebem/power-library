@@ -27,7 +27,7 @@ class Book {
       title: json['title'] as String,
       author: json['author'] as String,
       isRead: json['isRead'] as bool,
-      rate: json['rate'] as int,
+      rate: json['rate']?.round(),
     );
   }
 

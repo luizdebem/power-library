@@ -42,6 +42,8 @@ dependencies:
 
   firestore_ui: ^1.13.0
 
+  firebase_storage: ^7.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

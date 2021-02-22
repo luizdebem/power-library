@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:power_library/services/database.dart';
@@ -24,8 +26,15 @@ class _BookFormState extends State<BookForm> {
   }
 
   void _saveBook(Map<String, dynamic> bookData) async {
-    // save to firebase
-    await DatabaseService().addBook(bookData);
+    String coverPath;
+
+    if (bookData['cover'].length > 0) {
+      coverPath = await DatabaseService().uploadFile(bookData['cover'][0]);
+    }
+
+    final newBookData = {...bookData, 'cover': coverPath};
+
+    await DatabaseService().addBook(newBookData);
     Navigator.of(context, rootNavigator: true).pop();
   }
 
