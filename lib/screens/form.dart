@@ -1,8 +1,8 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:power_library/services/database.dart';
+import '../models/book.dart';
 
 class BookForm extends StatefulWidget {
   static const routeName = '/form';
@@ -18,6 +18,7 @@ class _BookFormState extends State<BookForm> {
   void toggleSwitch(_) {
     setState(() {
       isRead = _formKey.currentState.fields['isRead'].value;
+      print(isRead);
 
       if (!isRead) {
         _formKey.currentState.fields['rate']?.didChange(0.0);
@@ -25,21 +26,35 @@ class _BookFormState extends State<BookForm> {
     });
   }
 
-  void _saveBook(Map<String, dynamic> bookData) async {
+  void _saveBook(Map<String, dynamic> bookData, Book currentBook) async {
     String coverPath;
 
     if (bookData['cover'].length > 0) {
       coverPath = await DatabaseService().uploadFile(bookData['cover'][0]);
     }
 
+    coverPath ??= currentBook?.cover;
+
     final newBookData = {...bookData, 'cover': coverPath};
 
-    await DatabaseService().addBook(newBookData);
+    if (currentBook?.id == null) {
+      await DatabaseService().addBook(newBookData);
+    } else {
+      await DatabaseService().updateBook(currentBook.id, newBookData);
+    }
     Navigator.of(context, rootNavigator: true).pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    final Book book = ModalRoute.of(context)
+        .settings
+        .arguments; // Pegando os parâmetros passados pelo Navigator
+
+    setState(() {
+      isRead = book?.isRead ?? false;
+    });
+
     return Scaffold(
       backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
       appBar: AppBar(
@@ -53,6 +68,8 @@ class _BookFormState extends State<BookForm> {
             children: [
               FormBuilder(
                 key: _formKey,
+                initialValue: book
+                    ?.toJson(), // Se tiver book, vamos parsear e usar no Form
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: Column(
                   children: [
@@ -108,18 +125,20 @@ class _BookFormState extends State<BookForm> {
                           labelText: "Capa",
                           errorBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.red))),
-                      placeholderImage: Image.asset(
-                        "assets/images/cameraplaceholder.jpg",
-                        width: 60.0,
-                        height: 80.0,
-                      ).image,
+                      placeholderImage: book?.url != null
+                          ? Image.network(book.url).image
+                          : Image.asset(
+                              "assets/images/cameraplaceholder.jpg",
+                              width: 60.0,
+                              height: 80.0,
+                            ).image,
                     ),
                     SizedBox(
                       height: 15,
                     ),
                     FormBuilderSwitch(
                       name: "isRead",
-                      initialValue: false,
+                      initialValue: book?.isRead ?? false,
                       title: Text("Leitura finalizada?"),
                       onChanged: toggleSwitch,
                     ),
@@ -129,7 +148,7 @@ class _BookFormState extends State<BookForm> {
                     isRead
                         ? FormBuilderRating(
                             name: 'rate',
-                            initialValue: 0.0,
+                            initialValue: book?.rate?.toDouble() ?? 0.0,
                             max: 5.0,
                             enabled: isRead,
                             filledColor: Colors.amber,
@@ -155,7 +174,7 @@ class _BookFormState extends State<BookForm> {
                     print("Success book form:");
                     print(_formKey.currentState.value);
 
-                    await _saveBook(_formKey.currentState.value);
+                    await _saveBook(_formKey.currentState.value, book);
                   } else {
                     print("Error book form:");
                     print(_formKey.currentState.value);

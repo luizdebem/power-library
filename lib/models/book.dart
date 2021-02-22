@@ -6,6 +6,9 @@ class Book {
   bool isRead;
   int rate;
 
+  // Transient
+  String url;
+
   Book({
     this.id,
     this.cover,
