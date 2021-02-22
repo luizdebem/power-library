@@ -41,5 +41,15 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+
+	<key>NSCameraUsageDescription</key>
+	<string>$(PRODUCT_NAME) deseja usar a câmera para capturar as capas dos livros.</string>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>$(PRODUCT_NAME) deseja acessar a galeria de fotos para selecionar as capas dos livros.</string>
+
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>$(PRODUCT_NAME) deseja salvar as capas na sua galeria de fotos.</string>
+
 </dict>
 </plist>
