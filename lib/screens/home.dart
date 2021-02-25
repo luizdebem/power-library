@@ -6,6 +6,7 @@ import 'package:power_library/services/database.dart';
 import 'package:provider/provider.dart';
 import '../components/bookTile.dart';
 import 'package:firestore_ui/animated_firestore_list.dart';
+import '../services/auth.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/';
@@ -49,6 +50,20 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text("Power Library"),
         elevation: 0,
+        actions: [
+          FlatButton.icon(
+              onPressed: () async {
+                await AuthService().signOut();
+              },
+              icon: Icon(
+                Icons.logout,
+                color: Colors.white,
+              ),
+              label: Text(
+                "Sair",
+                style: TextStyle(color: Colors.white),
+              ))
+        ],
       ),
       body: Container(
         margin: EdgeInsets.only(top: 10.0),

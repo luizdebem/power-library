@@ -7,6 +7,10 @@ import './utils/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import './services/database.dart';
+import 'package:power_library/screens/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import './services/auth.dart';
+import './components/authGuard.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,15 +47,24 @@ ThemeData buildTheme() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<QuerySnapshot>.value(
-      value: DatabaseService().booksStream,
+    return MultiProvider(
+      providers: [
+        StreamProvider<QuerySnapshot>.value(
+            value: DatabaseService().booksStream),
+        StreamProvider<User>.value(
+          value: AuthService().user,
+        )
+      ],
       child: MaterialApp(
           title: 'Flutter Demo',
           theme: buildTheme(),
-          initialRoute: '/',
+          initialRoute: HomeScreen.routeName,
           routes: {
-            HomeScreen.routeName: (ctx) => HomeScreen(),
-            BookForm.routeName: (ctx) => BookForm()
+            HomeScreen.routeName: (ctx) =>
+                AuthGuard(child: HomeScreen(), fallback: LoginScreen()),
+            BookForm.routeName: (ctx) =>
+                AuthGuard(child: BookForm(), fallback: LoginScreen()),
+            LoginScreen.routeName: (ctx) => LoginScreen(),
           }),
     );
   }
