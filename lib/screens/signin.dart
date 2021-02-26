@@ -21,10 +21,14 @@ class _SigninScreenState extends State<SigninScreen> {
       final password = _formKey.currentState.value['password'];
       print(email);
       print(password);
-      await AuthService().signInWithEmailAndPassword(email, password);
-      Navigator.of(context).popUntil((route) {
-        return route.settings.name == "/";
-      });
+      try {
+        await AuthService().signInWithEmailAndPassword(email, password);
+        Navigator.of(context).popUntil((route) {
+          return route.settings.name == "/";
+        });
+      } catch (e) {
+        print(e);
+      }
     } else {
       return;
     }

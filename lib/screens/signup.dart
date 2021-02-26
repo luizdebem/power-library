@@ -19,10 +19,14 @@ class _SignupScreenState extends State<SignupScreen> {
       final password = _formKey.currentState.value['password'];
       print(email);
       print(password);
-      await AuthService().signUpWithEmailAndPassword(email, password);
-      Navigator.of(context).popUntil((route) {
-        return route.settings.name == "/";
-      });
+      try {
+        await AuthService().signUpWithEmailAndPassword(email, password);
+        Navigator.of(context).popUntil((route) {
+          return route.settings.name == "/";
+        });
+      } catch (e) {
+        print(e);
+      }
     } else {
       return;
     }

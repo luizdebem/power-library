@@ -39,7 +39,11 @@ class LoginScreen extends StatelessWidget {
               text: "Entre com Google",
               padding: EdgeInsets.all(8.0),
               onPressed: () async {
-                await AuthService().signInWithGoogle();
+                try {
+                  await AuthService().signInWithGoogle();
+                } catch (e) {
+                  print(e);
+                }
               },
             ),
             Divider(),
@@ -66,7 +70,11 @@ class LoginScreen extends StatelessWidget {
             Divider(),
             MaterialButton(
               onPressed: () async {
-                await AuthService().signInAnonymously();
+                try {
+                  await AuthService().signInAnonymously();
+                } catch (e) {
+                  print(e);
+                }
               },
               color: Colors.amber,
               child: Text("Entre anonimamente!"),

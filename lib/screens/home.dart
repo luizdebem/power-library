@@ -47,8 +47,31 @@ class _HomeScreenState extends State<HomeScreen> {
         .chain(CurveTween(curve: Curves.ease));
 
     final user = Provider.of<User>(context);
-
+    print(user.photoURL);
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.all(0.0),
+          children: [
+            DrawerHeader(
+              child: Column(
+                children: [
+                  CircleAvatar(
+                      radius: 40,
+                      backgroundImage: user.photoURL != null
+                          ? NetworkImage("user?.photoURL")
+                          : NetworkImage("https://i.imgur.com/7qXQhun.png")),
+                  Divider(),
+                  Text(user.displayName != ""
+                      ? user.displayName
+                      : "Usuário Anônimo"),
+                ],
+              ),
+              decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, 1.0)),
+            ),
+          ],
+        ),
+      ),
       backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
       appBar: AppBar(
         title: Text("Power Library"),
@@ -56,7 +79,11 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           FlatButton.icon(
               onPressed: () async {
-                await AuthService().signOut();
+                try {
+                  await AuthService().signOut();
+                } catch (e) {
+                  print(e);
+                }
               },
               icon: Icon(
                 Icons.logout,
@@ -88,7 +115,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-            Text("Olá ${user?.email}")
           ],
         ),
       ),
