@@ -39,7 +39,9 @@ class LoginScreen extends StatelessWidget {
               elevation: 8.0,
               text: "Entre com Google",
               padding: EdgeInsets.all(8.0),
-              onPressed: () {},
+              onPressed: () async {
+                await AuthService().signInWithGoogle();
+              },
             ),
             Divider(),
             SignInButton(
