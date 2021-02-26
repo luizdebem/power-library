@@ -60,10 +60,9 @@ class _SignupScreenState extends State<SignupScreen> {
                               print(password);
                               await AuthService()
                                   .signUpWithEmailAndPassword(email, password);
-                              final nav =
-                                  Navigator.of(context, rootNavigator: true);
-                              nav.pop();
-                              nav.pop(); // Tirar dúvida
+                              Navigator.of(context).popUntil((route) {
+                                return route.settings.name == "/";
+                              });
                             } else {}
                           },
                           color: Colors.amber,

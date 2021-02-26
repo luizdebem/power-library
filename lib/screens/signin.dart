@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import '../services/auth.dart';
 import './signup.dart';
+import './login.dart';
 
 class SigninScreen extends StatefulWidget {
   static const routeName = '/signin';
@@ -63,9 +64,9 @@ class _SigninScreenState extends State<SigninScreen> {
                               print(password);
                               await AuthService()
                                   .signInWithEmailAndPassword(email, password);
-                              final nav =
-                                  Navigator.of(context, rootNavigator: true);
-                              nav.pop(); // tirar duvida !!
+                              Navigator.of(context).popUntil((route) {
+                                return route.settings.name == "/";
+                              });
                             },
                             color: Colors.amber,
                             textColor: Colors.black,
