@@ -14,8 +14,27 @@ class SigninScreen extends StatefulWidget {
 class _SigninScreenState extends State<SigninScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
+  void submitData() async {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+
+      final email = _formKey.currentState.value['email'];
+      final password = _formKey.currentState.value['password'];
+      print(email);
+      print(password);
+      await AuthService().signInWithEmailAndPassword(email, password);
+      Navigator.of(context).popUntil((route) {
+        return route.settings.name == "/";
+      });
+    } else {
+      return;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final node = FocusScope.of(context);
+
     return Scaffold(
       backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
       appBar: AppBar(
@@ -49,6 +68,7 @@ class _SigninScreenState extends State<SigninScreen> {
                                   labelText: "E-mail",
                                   border: OutlineInputBorder()),
                               keyboardType: TextInputType.emailAddress,
+                              onEditingComplete: () => node.nextFocus(),
                             ),
                             Divider(),
                             FormBuilderTextField(
@@ -70,29 +90,14 @@ class _SigninScreenState extends State<SigninScreen> {
                                   labelText: "Senha",
                                   border: OutlineInputBorder()),
                               keyboardType: TextInputType.text,
+                              onSubmitted: (_) {
+                                node.unfocus();
+                                submitData();
+                              },
                             ),
                             Divider(),
                             FlatButton(
-                              onPressed: () async {
-                                if (_formKey.currentState.validate()) {
-                                  _formKey.currentState.save();
-
-                                  final email =
-                                      _formKey.currentState.value['email'];
-                                  final password =
-                                      _formKey.currentState.value['password'];
-                                  print(email);
-                                  print(password);
-                                  await AuthService()
-                                      .signInWithEmailAndPassword(
-                                          email, password);
-                                  Navigator.of(context).popUntil((route) {
-                                    return route.settings.name == "/";
-                                  });
-                                } else {
-                                  return;
-                                }
-                              },
+                              onPressed: () => submitData(),
                               color: Colors.amber,
                               textColor: Colors.black,
                               padding: EdgeInsets.all(8.0),
