@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import '../services/auth.dart';
 import './signup.dart';
-import './login.dart';
 
 class SigninScreen extends StatefulWidget {
   static const routeName = '/signin';

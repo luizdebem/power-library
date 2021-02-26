@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import '../services/auth.dart';
-import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import './signin.dart';
+import 'dart:io' show Platform;
 
 class LoginScreen extends StatelessWidget {
   static const routeName = '/login';
@@ -44,14 +43,22 @@ class LoginScreen extends StatelessWidget {
               },
             ),
             Divider(),
-            SignInButton(
-              Buttons.Apple,
-              elevation: 8.0,
-              text: "Entre com Apple",
-              padding: EdgeInsets.all(8.0),
-              onPressed: () {},
-            ),
-            Divider(),
+            Platform.isIOS
+                ? Container(
+                    child: Column(
+                      children: [
+                        SignInButton(
+                          Buttons.Apple,
+                          elevation: 8.0,
+                          text: "Entre com Apple",
+                          padding: EdgeInsets.all(8.0),
+                          onPressed: () {},
+                        ),
+                        Divider(),
+                      ],
+                    ),
+                  )
+                : Container(),
             Text(
               "ou...",
               style: TextStyle(),
