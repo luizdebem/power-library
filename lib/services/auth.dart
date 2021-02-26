@@ -18,6 +18,26 @@ class AuthService {
     }
   }
 
+  signUpWithEmailAndPassword(email, password) async {
+    try {
+      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      return userCredential.user;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  signInWithEmailAndPassword(email, password) async {
+    try {
+      UserCredential userCredential = await auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      return userCredential.user;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
   Future<void> signOut() async {
     try {
       return auth.signOut();

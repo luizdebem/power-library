@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../components/bookTile.dart';
 import 'package:firestore_ui/animated_firestore_list.dart';
 import '../services/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/';
@@ -44,6 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final _tweenInsert = Tween(begin: Offset(1, 0), end: Offset(0, 0))
         .chain(CurveTween(curve: Curves.ease));
+
+    final user = Provider.of<User>(context);
 
     return Scaffold(
       backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
@@ -85,6 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
+            Text("Olá ${user?.email}")
           ],
         ),
       ),
