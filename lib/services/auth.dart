@@ -65,6 +65,8 @@ class AuthService {
 
   Future<void> signOut() async {
     try {
+      GoogleSignIn _googleSignIn = GoogleSignIn();
+      await _googleSignIn.signOut();
       return auth.signOut();
     } catch (e) {
       print("Error firebase sign out: ${e.toString()}");
