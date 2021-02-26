@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   CircleAvatar(
                       radius: 40,
                       backgroundImage: user.photoURL != null
-                          ? NetworkImage("user?.photoURL")
+                          ? NetworkImage(user.photoURL)
                           : NetworkImage("https://i.imgur.com/7qXQhun.png")),
                   Divider(),
                   Text(user.displayName != ""
