@@ -16,30 +16,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Widget> _bookTiles = [];
-  int _delay = 0;
-
-  void _loadList(QuerySnapshot books) async {
-    setState(() {
-      _bookTiles.clear();
-      _listKey = GlobalKey<AnimatedListState>();
-      _delay = 0;
-
-      books.docs.forEach((data) {
-        Book b = Book.fromJson({'id': data.id, ...data.data()});
-        print(b.toString());
-        _delay += 200;
-
-        Future.delayed(Duration(milliseconds: _delay), () {
-          _bookTiles.add(BookTile(book: b));
-          _listKey.currentState.insertItem(_bookTiles.length - 1);
-        });
-      });
-    });
-  }
-
-  GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-
   @override
   Widget build(BuildContext context) {
     final _tweenInsert = Tween(begin: Offset(1, 0), end: Offset(0, 0))
@@ -75,7 +51,13 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: FirestoreAnimatedList(
                 query: DatabaseService().booksQuery,
+                emptyChild: Center(
+                    child: Text(
+                  "Você não adicionou nenhum livro ainda!",
+                  style: TextStyle(fontSize: 25.0),
+                )),
                 itemBuilder: (ctx, data, animation, index) {
+                  print("BOM DIA JOSIAS");
                   Book b = Book.fromJson({'id': data.id, ...data.data()});
 
                   return SlideTransition(

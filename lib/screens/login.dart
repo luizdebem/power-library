@@ -17,8 +17,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   void _doLogin(Map<String, dynamic> formData) async {
-    User user = await AuthService()
-        .signInWithEmailAndPassword(formData["email"], formData["password"]);
+    User user = await AuthService().signInWithEmailAndPassword(
+        formData["email"].trim(), formData["password"]);
     if (user == null) {
       await showDialog(
           context: context,

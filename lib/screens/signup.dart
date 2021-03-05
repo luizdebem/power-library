@@ -17,8 +17,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   void _doSignup(Map<String, dynamic> formData) async {
-    User user = await AuthService()
-        .signUpWithEmailAndPassword(formData["email"], formData["password"]);
+    User user = await AuthService().signUpWithEmailAndPassword(
+        formData["email"].trim(), formData["password"]);
     if (user == null) {
       await showDialog(
           context: context,
