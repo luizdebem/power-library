@@ -11,6 +11,7 @@ import 'package:power_library/screens/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import './services/auth.dart';
 import './components/authGuard.dart';
+import './screens/signup.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,6 +66,7 @@ class MyApp extends StatelessWidget {
             BookForm.routeName: (ctx) =>
                 AuthGuard(child: BookForm(), fallback: LoginScreen()),
             LoginScreen.routeName: (ctx) => LoginScreen(),
+            SignupScreen.routeName: (ctx) => SignupScreen(),
           }),
     );
   }

@@ -7,6 +7,15 @@ class AuthService {
     return auth.authStateChanges();
   }
 
+  Future<void> signOut() async {
+    try {
+      return auth.signOut();
+    } catch (e) {
+      print("Error firebase sign out: ${e.toString()}");
+      return null;
+    }
+  }
+
   Future<User> signInAnonymously() async {
     try {
       UserCredential userCredential = await auth
@@ -18,11 +27,25 @@ class AuthService {
     }
   }
 
-  Future<void> signOut() async {
+  Future<User> signInWithEmailAndPassword(String email, String password) async {
     try {
-      return auth.signOut();
+      UserCredential userCredential = await auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      return userCredential.user;
     } catch (e) {
-      print("Error firebase sign out: ${e.toString()}");
+      print("Erro sign in email/password" + e.toString());
+      return null;
+    }
+  }
+
+  Future<User> signUpWithEmailAndPassword(String email, String password) async {
+    try {
+      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      return userCredential.user;
+    } catch (e) {
+      print("Erro sign up email/password" + e.toString());
+      return null;
     }
   }
 }
