@@ -50,11 +50,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        StreamProvider<QuerySnapshot>.value(
-            value: DatabaseService().booksStream),
-        StreamProvider<User>.value(
-          value: AuthService().user,
-        )
+        StreamProvider<User>(
+          create: (_) => AuthService().user,
+        ),
+        StreamProvider<QuerySnapshot>(
+          create: (ctx) {
+            final user = Provider.of<User>(ctx, listen: false);
+            return DatabaseService(uid: user?.uid).booksStream;
+          },
+        ),
+        // StreamProvider<QuerySnapshot>.value(
+        //     value: DatabaseService().booksStream),
+        // StreamProvider<User>.value(
+        //   value: AuthService().user,
+        // )
       ],
       child: MaterialApp(
           title: 'Flutter Demo',

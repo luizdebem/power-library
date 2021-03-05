@@ -1,17 +1,24 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 
 class DatabaseService {
+  final String uid;
+
+  DatabaseService({@required this.uid});
+
   final CollectionReference booksCollection =
       FirebaseFirestore.instance.collection('books');
 
   final booksBucket = FirebaseStorage.instance.ref();
   static final coverFolder = 'covers';
 
-  Stream<QuerySnapshot> get booksStream => booksCollection.snapshots();
+  Stream<QuerySnapshot> get booksStream =>
+      booksCollection.where('uid', isEqualTo: uid).snapshots();
 
-  Query get booksQuery => booksCollection.orderBy('title');
+  Query get booksQuery =>
+      booksCollection.where('uid', isEqualTo: uid).orderBy('title');
 
   Future<DocumentReference> addBook(Map<String, dynamic> data) =>
       booksCollection.add(data);

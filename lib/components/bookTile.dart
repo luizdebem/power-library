@@ -3,6 +3,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:power_library/models/book.dart';
 import '../services/database.dart';
 import '../screens/form.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class BookTile extends StatelessWidget {
   final Book book;
@@ -11,6 +13,9 @@ class BookTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
+    String uid = user?.uid;
+
     return Dismissible(
       key: ObjectKey(book.id),
       background: Container(
@@ -49,7 +54,7 @@ class BookTile extends StatelessWidget {
             });
       },
       onDismissed: (direction) async {
-        await DatabaseService().deleteBook(book.id);
+        await DatabaseService(uid: uid).deleteBook(book.id);
       },
       child: GestureDetector(
         onTap: () {
@@ -75,7 +80,8 @@ class BookTile extends StatelessWidget {
                                 BorderSide(width: 1.0, color: Colors.white24))),
                     child: book.cover != null
                         ? FutureBuilder<String>(
-                            future: DatabaseService().getFileURL(book.cover),
+                            future: DatabaseService(uid: uid)
+                                .getFileURL(book.cover),
                             builder: (context, AsyncSnapshot<String> snapshot) {
                               switch (snapshot.connectionState) {
                                 case ConnectionState.done:

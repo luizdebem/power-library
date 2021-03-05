@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:power_library/services/database.dart';
 import '../models/book.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 class BookForm extends StatefulWidget {
   static const routeName = '/form';
@@ -16,6 +18,8 @@ class _BookFormState extends State<BookForm> {
   bool isRead = false;
   var book;
 
+  String uid;
+
   void toggleSwitch(_) {
     setState(() {
       isRead = _formKey.currentState.fields['isRead'].value;
@@ -28,20 +32,25 @@ class _BookFormState extends State<BookForm> {
   }
 
   void _saveBook(Map<String, dynamic> bookData) async {
+    if (uid == null) {
+      return;
+    }
+
     String coverPath;
 
     if (bookData['cover'].length > 0) {
-      coverPath = await DatabaseService().uploadFile(bookData['cover'][0]);
+      coverPath =
+          await DatabaseService(uid: uid).uploadFile(bookData['cover'][0]);
     }
 
     coverPath ??= book?.cover;
 
-    final newBookData = {...bookData, 'cover': coverPath};
+    final newBookData = {...bookData, 'uid': uid, 'cover': coverPath};
 
     if (book?.id == null) {
-      await DatabaseService().addBook(newBookData);
+      await DatabaseService(uid: uid).addBook(newBookData);
     } else {
-      await DatabaseService().updateBook(book.id, newBookData);
+      await DatabaseService(uid: uid).updateBook(book.id, newBookData);
     }
     Navigator.of(context, rootNavigator: true).pop();
   }
@@ -58,6 +67,9 @@ class _BookFormState extends State<BookForm> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
+    uid = user?.uid;
+
     return Scaffold(
       backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
       appBar: AppBar(
